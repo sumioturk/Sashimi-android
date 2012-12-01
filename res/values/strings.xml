@@ -1,0 +1,12 @@
+<resources>
+
+    <string name="app_name">Sashimi</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Sashimi</string>
+    <string name="sashimi_user_name">Name</string>
+    <string name="sashimi_uer_password">Password</string>
+    <string name="sashimi_header">SashimiQuality Settings</string>
+    <string name="sashimi_quality">Sashimi Quality</string>
+
+</resources>

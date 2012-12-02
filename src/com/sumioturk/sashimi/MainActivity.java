@@ -189,7 +189,9 @@ public class MainActivity extends Activity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(oAuthUrl));
+					Intent intent = new Intent(getApplicationContext(), OauthActivity.class);
+					intent.putExtra("url", oAuthUrl);
+					intent.putExtra("sessionKey", sessionKey);
 					startActivity(intent);
 				}
 			}

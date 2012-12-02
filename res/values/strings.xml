@@ -12,5 +12,6 @@
     <string name="user_preferences_session_key">SessionKey</string>
     <string name="user_preferences_name">Name</string>
     <string name="user_preferences_pass">Pass</string>
+    <string name="title_activity_oauth">OauthActivity</string>
 
 </resources>

@@ -1,18 +1,14 @@
 package com.sumioturk.sashimi;
 
-import java.io.IOException;
+import java.util.ArrayList;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import com.sumioturk.sashimi.core.AbstractSashimiApiService;
+import com.sumioturk.sashimi.core.SashimiJoinService;
+import com.sumioturk.sashimi.core.SashimiLoginService;
+import com.sumioturk.sashimi.core.SashimiServiceExecutor;
 
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -119,47 +115,13 @@ public class MainActivity extends Activity {
 						mn.setTextColor(128);
 					}
 				} else {
-					Thread asyncApiCall = new Thread(){
-						public void run(){}
-					};
-					Uri.Builder uriBuilder = new Uri.Builder();
-					uriBuilder.scheme("http");
-					uriBuilder.encodedAuthority("sashimiquality.com:9000");
-					uriBuilder.path("/join/");
-					uriBuilder.appendQueryParameter("name", nameInput);
-					uriBuilder.appendQueryParameter("pass", passInput);
-					uriBuilder.appendQueryParameter("sashimi", new String(
-							sashimi + ""));
-					String apiUrl = uriBuilder.build().toString();
-					HttpGet request = new HttpGet(apiUrl);
-					DefaultHttpClient httpClient = new DefaultHttpClient();
-					try {
-						String result = httpClient.execute(request,
-								new ResponseHandler<String>() {
-
-									public String handleResponse(
-											HttpResponse response)
-											throws ClientProtocolException,
-											IOException {
-										switch (response.getStatusLine()
-												.getStatusCode()) {
-										case HttpStatus.SC_OK:
-											return EntityUtils.toString(
-													response.getEntity(),
-													"UTF-8");
-										default:
-											break;
-
-										}
-										return null;
-									}
-								});
-					} catch (ClientProtocolException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-
+					ArrayList<AbstractSashimiApiService> services = new ArrayList<AbstractSashimiApiService>();
+					services.add(new SashimiJoinService(nameInput, passInput,
+							new String("" + sashimi)));
+					services.add(new SashimiLoginService(nameInput, passInput));
+					SashimiServiceExecutor se = new SashimiServiceExecutor(services);
+					ArrayList<String> results = se.execute();
+					System.out.print("c");
 				}
 			}
 		});

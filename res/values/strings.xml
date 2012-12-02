@@ -8,5 +8,9 @@
     <string name="sashimi_uer_password">Password</string>
     <string name="sashimi_header">SashimiQuality Settings</string>
     <string name="sashimi_quality">Sashimi Quality</string>
+    <string name="user_preferences">UserPreferences</string>
+    <string name="user_preferences_session_key">SessionKey</string>
+    <string name="user_preferences_name">Name</string>
+    <string name="user_preferences_pass">Pass</string>
 
 </resources>

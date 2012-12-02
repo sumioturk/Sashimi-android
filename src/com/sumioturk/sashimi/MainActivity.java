@@ -1,13 +1,24 @@
 package com.sumioturk.sashimi;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.sumioturk.sashimi.core.AbstractSashimiApiService;
 import com.sumioturk.sashimi.core.SashimiJoinService;
 import com.sumioturk.sashimi.core.SashimiLoginService;
+import com.sumioturk.sashimi.core.SashimiOAuthUrlService;
 import com.sumioturk.sashimi.core.SashimiServiceExecutor;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -41,6 +52,8 @@ public class MainActivity extends Activity {
 		b = (Button) findViewById(R.id.b);
 		name = (EditText) findViewById(R.id.name);
 		pass = (EditText) findViewById(R.id.pass);
+		SharedPreferences settings = getSharedPreferences("UserPreferences", 0);
+		String pref = settings.getString("SessionKey", "nope");
 
 		d.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 
@@ -119,9 +132,65 @@ public class MainActivity extends Activity {
 					services.add(new SashimiJoinService(nameInput, passInput,
 							new String("" + sashimi)));
 					services.add(new SashimiLoginService(nameInput, passInput));
-					SashimiServiceExecutor se = new SashimiServiceExecutor(services);
-					ArrayList<String> results = se.execute();
-					System.out.print("c");
+					SashimiServiceExecutor se = new SashimiServiceExecutor(
+							services);
+					ArrayList<String> results = null;
+					try {
+						results = se.execute();
+					} catch (Exception e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+					}
+					SharedPreferences settings = getSharedPreferences(
+							"UserPreferences", 0);
+
+					JSONObject json = null;
+					String sessionKey = null;
+					try {
+						json = new JSONObject(results.get(1));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					try {
+						sessionKey = json.get("session_key").toString();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					SharedPreferences.Editor editor = settings.edit();
+					editor.putString("SessionKey", sessionKey);
+					editor.commit();
+					
+					// oauth url 
+					
+					ArrayList<AbstractSashimiApiService> oauthservice = new ArrayList<AbstractSashimiApiService>();
+					String oAuthUrl = null;
+					oauthservice.add(new SashimiOAuthUrlService(sessionKey));
+					SashimiServiceExecutor oauthse = new SashimiServiceExecutor(oauthservice);
+					ArrayList<String> oauthResult = null;
+					try {
+						oauthResult = oauthse.execute();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					try {
+						json = new JSONObject(oauthResult.get(0));
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					try {
+						oAuthUrl = json.get("auth_url").toString();
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(oAuthUrl));
+					startActivity(intent);
 				}
 			}
 		});

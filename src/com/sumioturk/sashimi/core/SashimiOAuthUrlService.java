@@ -2,30 +2,26 @@ package com.sumioturk.sashimi.core;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import android.net.Uri;
-
-public class SashimiJoinService extends AbstractSashimiApiService {
+public class SashimiOAuthUrlService extends AbstractSashimiApiService {
 
 	private HashMap<String, String> params;
-	private SashimiApi api = SashimiApi.join;
+	private SashimiApi api = SashimiApi.oauth_url;
 	private HttpGet request;
 	private DefaultHttpClient httpClient;
 
-	public SashimiJoinService(String name, String pass, String sashimi) {
+	public SashimiOAuthUrlService(String key) {
 		this.params = new HashMap<String, String>();
 		this.httpClient = new DefaultHttpClient();
-		params.put("name", name);
-		params.put("pass", pass);
-		params.put("sashimi", sashimi);
+		params.put("key", key);
 		this.request = new SashimiApiRequestBuilder(api, params).build();
 	}
 
@@ -44,4 +40,5 @@ public class SashimiJoinService extends AbstractSashimiApiService {
 				});
 		return result;
 	}
+
 }

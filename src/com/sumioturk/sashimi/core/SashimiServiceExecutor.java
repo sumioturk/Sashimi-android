@@ -7,7 +7,7 @@ import org.apache.http.client.ClientProtocolException;
 
 public class SashimiServiceExecutor {
 	private Thread thread;
-	private ArrayList<String> results;
+	private volatile ArrayList<String> results;
 	
 	public SashimiServiceExecutor(final ArrayList<AbstractSashimiApiService> services){
 		this.results = new ArrayList<String>(); 
@@ -31,8 +31,9 @@ public class SashimiServiceExecutor {
 		};
 	}
 	
-	public ArrayList<String> execute() {
+	public ArrayList<String> execute() throws Exception {
 		this.thread.start();
+		this.thread.join();
 		return this.results;
 	}
 }
